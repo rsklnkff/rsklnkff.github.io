@@ -14,11 +14,7 @@
   --fg: #ddd8cf;
   --muted: #5c564e;
   --gold: #c4a265;
-  --rust: #a05a3c;
-  --sea: #3a6b7c;
-  --forest: #4a7a5c;
   --smoke: #888078;
-  --chapter-gap: 0;
 }
 
 html { scroll-behavior: smooth; }
@@ -31,7 +27,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ═══ GRAIN ═══ */
 body::after {
   content: '';
   position: fixed;
@@ -43,7 +38,22 @@ body::after {
 
 ::selection { background: var(--gold); color: var(--bg); }
 
-/* ═══ OPENING ═══ */
+#ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+.cursor-glow {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle, rgba(196,162,101,0.03) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.4s;
+  opacity: 0;
+}
+.cursor-glow.active { opacity: 1; }
+
 .opening {
   min-height: 100vh;
   display: flex;
@@ -52,6 +62,7 @@ body::after {
   text-align: center;
   padding: 2rem;
   position: relative;
+  z-index: 2;
 }
 
 .opening-glow {
@@ -108,10 +119,7 @@ body::after {
   animation: fadeUp 1.2s ease forwards 0.8s;
 }
 
-.opening-title em {
-  font-style: italic;
-  color: var(--gold);
-}
+.opening-title em { font-style: italic; color: var(--gold); }
 
 .opening-lede {
   font-size: 1.1rem;
@@ -156,13 +164,8 @@ body::after {
   0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
 }
 
-/* ═══ CHAPTER ═══ */
-.chapter {
-  position: relative;
-  overflow: hidden;
-}
+.chapter { position: relative; overflow: hidden; z-index: 2; }
 
-/* Full-bleed image with text overlay */
 .chapter-hero {
   position: relative;
   min-height: 70vh;
@@ -174,15 +177,13 @@ body::after {
 
 .chapter-hero-img {
   position: absolute;
-  inset: 0;
+  inset: -20px;
   background-size: cover;
   background-position: center;
   filter: brightness(0.4) contrast(1.05) saturate(0.7) blur(1.5px);
-  transition: transform 12s ease-out;
   transform: scale(1.04);
+  will-change: transform;
 }
-
-.chapter:hover .chapter-hero-img { transform: scale(1.07); }
 
 .chapter-hero-overlay {
   position: absolute;
@@ -190,11 +191,7 @@ body::after {
   background: linear-gradient(to top, var(--bg) 0%, rgba(8,8,10,0.3) 50%, rgba(8,8,10,0.5) 100%);
 }
 
-.chapter-hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 700px;
-}
+.chapter-hero-content { position: relative; z-index: 2; max-width: 700px; }
 
 .chapter-number {
   font-family: 'Space Mono', monospace;
@@ -219,14 +216,14 @@ body::after {
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--smoke);
-  margin-bottom: 0rem;
 }
 
-/* Chapter body text */
 .chapter-body {
   max-width: 680px;
   margin: 0 auto;
   padding: 4rem clamp(2rem, 6vw, 6rem) 2rem;
+  position: relative;
+  z-index: 2;
 }
 
 .chapter-body p {
@@ -249,16 +246,15 @@ body::after {
 .chapter-body em { color: var(--fg); font-style: italic; }
 .chapter-body strong { color: var(--gold); font-weight: 700; }
 
-/* Screenshot gallery */
 .chapter-gallery {
   display: grid;
   gap: 3px;
   margin: 0 clamp(1rem, 4vw, 4rem) 0;
+  position: relative;
+  z-index: 2;
 }
 
 .chapter-gallery.g2 { grid-template-columns: 1fr 1fr; }
-.chapter-gallery.g3 { grid-template-columns: 2fr 1fr; }
-.chapter-gallery.g1 { grid-template-columns: 1fr; max-width: 900px; margin-left: auto; margin-right: auto; }
 .chapter-gallery.g4 { grid-template-columns: 1fr 1fr; }
 
 .gal-img {
@@ -300,12 +296,13 @@ body::after {
   filter: saturate(0.9) contrast(1) brightness(1) blur(0.3px);
 }
 
-/* Transition / bridge between chapters */
 .bridge {
   padding: 6rem clamp(2rem, 6vw, 6rem);
   max-width: 700px;
   margin: 0 auto;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .bridge p {
@@ -326,11 +323,11 @@ body::after {
   opacity: 0.4;
 }
 
-/* ═══ THE FUTURE SECTION ═══ */
 .future {
   padding: 8rem clamp(2rem, 6vw, 6rem);
   text-align: center;
   position: relative;
+  z-index: 2;
 }
 
 .future-label {
@@ -380,10 +377,11 @@ body::after {
   border-radius: 2px;
 }
 
-/* ═══ CLOSING ═══ */
 .closing {
   padding: 6rem 2rem 3rem;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .closing-name {
@@ -415,49 +413,42 @@ body::after {
   margin-top: 5rem;
 }
 
-/* ═══ SCROLL REVEAL ═══ */
 .sr { opacity: 0; transform: translateY(35px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
 .sr.visible { opacity: 1; transform: translateY(0); }
 .sr-d1 { transition-delay: 0.1s; }
 .sr-d2 { transition-delay: 0.2s; }
-.sr-d3 { transition-delay: 0.3s; }
 
-/* ═══ RESPONSIVE ═══ */
 @media (max-width: 768px) {
   .chapter-hero { min-height: 55vh; padding: 2rem 1.5rem; }
   .chapter-body { padding: 3rem 1.5rem 1.5rem; }
-  .chapter-gallery.g2, .chapter-gallery.g3, .chapter-gallery.g4 { grid-template-columns: 1fr; }
+  .chapter-gallery.g2, .chapter-gallery.g4 { grid-template-columns: 1fr; }
   .bridge { padding: 4rem 1.5rem; }
+  .cursor-glow { display: none; }
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- OPENING -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<section class="opening">
+<canvas id="ambient"></canvas>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<section class="opening" data-atmosphere="stars">
   <div class="opening-glow"></div>
   <div class="opening-inner">
     <div class="opening-pretitle">A story told in games</div>
     <div class="opening-name">Denys Khachatrian</div>
-    <h1 class="opening-title">The games<br>that <em>made</em> me</h1>
+    <h1 class="opening-title">The games that <em>made</em> me</h1>
     <p class="opening-lede">
-      Every game I've built carried something from the last one. A fascination. 
-      An obsession. A question I couldn't stop asking. This is the thread that 
+      Every game I've built carried something from the last one. A fascination.
+      An obsession. A question I couldn't stop asking. This is the thread that
       connects a post-apocalyptic city to the open sea to the edge of space.
     </p>
   </div>
-  <div class="opening-scroll-cue">
-    <span></span>
-    <small>Scroll to begin</small>
-  </div>
+  <div class="opening-scroll-cue"><span></span><small>Scroll to begin</small></div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- CHAPTER 1 — CRIMECRAFT -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" data-atmosphere="embers">
   <div class="chapter-hero">
     <div class="chapter-hero-img" style="background-image: url('https://khachatran.com/content/Screenshots/CC_1.jpg');"></div>
     <div class="chapter-hero-overlay"></div>
@@ -467,13 +458,11 @@ body::after {
       <div class="chapter-subtitle">2006 – 2011 · Vogster Entertainment · Unreal Engine 3</div>
     </div>
   </div>
-
   <div class="chapter-body sr">
     <p>It started with a city on fire. Sunrise City — a persistent-world MMO shooter where gangs replaced governments, economies ran on reputation, and every bullet mattered because the world never stopped. Published by THQ. Built on Unreal Engine 3. Shipped globally with two expansions.</p>
     <p>This was the school. Not of code — I'd been writing that since 2000, from RenderMan shaders to custom DX9 engines. This was the school of <em>scale</em>. Of understanding what it takes to make a world that <strong>thousands of people live inside simultaneously</strong>. Trade systems. Loot economies. Gang territory control. Content pipelines that never sleep. The moment you ship an MMO, you learn that a game isn't a product — it's a <em>living organism.</em></p>
     <p>CrimeCraft taught me that the most beautiful engineering is invisible. Players never see the servers. They feel <em>the world.</em></p>
   </div>
-
   <div class="chapter-gallery g4 sr sr-d1">
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/CC_2.jpg" alt="CrimeCraft" loading="lazy"></div>
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/CC_3.jpg" alt="CrimeCraft" loading="lazy"></div>
@@ -482,17 +471,14 @@ body::after {
   </div>
 </div>
 
-<!-- BRIDGE -->
 <div class="bridge sr">
   <div class="bridge-line"></div>
   <p>The persistent world stayed with me. But I wanted something <em>purer</em> — a simulation so precise that even the people living the real thing would trust it.</p>
   <div class="bridge-line"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- CHAPTER 2 — RACEROOM -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" data-atmosphere="rain">
   <div class="chapter-hero">
     <div class="chapter-hero-img" style="background-image: url('https://khachatran.com/content/Screenshots/R3E_1.jpg');"></div>
     <div class="chapter-hero-overlay"></div>
@@ -502,13 +488,11 @@ body::after {
       <div class="chapter-subtitle">2011 – 2013 · SimBin Studios AB · Lead Developer</div>
     </div>
   </div>
-
   <div class="chapter-body sr">
     <p>From the chaos of gang warfare to the precision of a braking point at 280 km/h. SimBin Studios — one of the most respected names in sim racing — brought me in to lead their headline project. The task: build a game-as-service racing framework from the ground up.</p>
     <p>What we created became RaceRoom Racing Experience. A free-to-play simulator so authentic that <em>professional DTM and WTCC drivers use it for training.</em> Eurogamer would later call it the best racing game most people had never heard of. Over a decade later it's still running, still being updated, still fast. 11,000+ Steam reviews.</p>
     <p>The lesson was about <strong>fidelity as an art form.</strong> When you model tyre physics well enough that a real driver nods — that's not engineering. That's <em>craft.</em> The gap between simulation and reality is where beauty lives.</p>
   </div>
-
   <div class="chapter-gallery g4 sr sr-d1">
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/R3E_1.jpg" alt="RaceRoom" loading="lazy"></div>
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/R3E_2.jpg" alt="RaceRoom" loading="lazy"></div>
@@ -517,17 +501,14 @@ body::after {
   </div>
 </div>
 
-<!-- BRIDGE -->
 <div class="bridge sr">
   <div class="bridge-line"></div>
   <p>I'd built a persistent shooter world. I'd built a precision simulator. What happens when you try both at <em>the largest scale imaginable?</em></p>
   <div class="bridge-line"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- CHAPTER 3 — BATTLEFIELD / EA DICE -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="chapter">
+<!-- CHAPTER 3 — BATTLEFIELD -->
+<div class="chapter" data-atmosphere="smoke">
   <div class="chapter-hero" style="min-height: 60vh;">
     <div class="chapter-hero-img" style="background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 30%, #0f1923 60%, #0a0e14 100%); filter: none;"></div>
     <div class="chapter-hero-overlay" style="background: linear-gradient(to top, var(--bg) 0%, rgba(8,8,10,0.1) 100%);"></div>
@@ -537,7 +518,6 @@ body::after {
       <div class="chapter-subtitle">2013 – 2014 · EA · DICE · Easy Studios · Studio Technical Director</div>
     </div>
   </div>
-
   <div class="chapter-body sr">
     <p>You've played it. I can't show you the screenshots — it's EA, you know how it is — but you've played at least one game from at least one franchise I worked on. You <em>know</em> you have.</p>
     <p>Studio Technical Director at DICE. The biggest stage in gaming. Not a place for small ideas. A place where every system operates at a scale most engineers never encounter, where the technical challenges exist because <em>nothing has ever been built at this resolution before.</em></p>
@@ -545,17 +525,14 @@ body::after {
   </div>
 </div>
 
-<!-- BRIDGE -->
 <div class="bridge sr">
   <div class="bridge-line"></div>
   <p>I'd seen how the biggest studios in the world build games. Now I wanted to <em>build a studio.</em> And I wanted to build games where the wind itself is a character.</p>
   <div class="bridge-line"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- CHAPTER 4 — NAVAL ACTION -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" data-atmosphere="sea">
   <div class="chapter-hero">
     <div class="chapter-hero-img" style="background-image: url('https://khachatran.com/content/Screenshots/NA_1.jpg');"></div>
     <div class="chapter-hero-overlay"></div>
@@ -565,30 +542,25 @@ body::after {
       <div class="chapter-subtitle">2014 – present · Game Labs · Co-Founder & Vice President</div>
     </div>
   </div>
-
   <div class="chapter-body sr">
     <p>We co-founded Game Labs to make the games we always wanted to play. The first obsession: the Age of Sail. Not the romantic version. The <em>real</em> one — where yard angles matter, where the wind is your enemy, where a ship is a machine of 10,000 decisions.</p>
     <p>Naval Action became a game where <strong>even the waves are calculated on the server</strong> — making hacking impossible by design. Fifty historically accurate warships. Realistic ballistics. A player-driven economy built around clans, ports, and trade routes that span the entire Caribbean. Steam named it one of the best Early Access releases of 2019.</p>
     <p>It was, at its heart, a love letter to simulation. The same instinct that drove RaceRoom — that obsessive need to close the gap between the virtual and the real — but now applied to canvas and cannon. The <em>patience</em> of a 45-minute battle. The beauty of a first-rate ship-of-the-line catching the wind at dawn.</p>
   </div>
-
   <div class="chapter-gallery g2 sr sr-d1">
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/NA_1.jpg" alt="Naval Action" loading="lazy"></div>
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/NA_2.jpg" alt="Naval Action" loading="lazy"></div>
   </div>
 </div>
 
-<!-- BRIDGE -->
 <div class="bridge sr">
   <div class="bridge-line"></div>
   <p>We'd mastered the sea. We'd shipped strategy games that PC&nbsp;Gamer called <em>among the 20 best wargames of all time.</em> But what kept pulling at me was land — wild, procedural, alive.</p>
   <div class="bridge-line"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- CHAPTER 5 — THIS LAND IS MY LAND -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" data-atmosphere="dust">
   <div class="chapter-hero">
     <div class="chapter-hero-img" style="background-image: url('https://khachatran.com/content/Screenshots/TLIML_1.jpg');"></div>
     <div class="chapter-hero-overlay"></div>
@@ -598,31 +570,26 @@ body::after {
       <div class="chapter-subtitle">2019 – 2022 · Game Labs · 100 sq mi open world</div>
     </div>
   </div>
-
   <div class="chapter-body sr">
     <p>A hundred square miles that never generate the same way twice. Cities that grow. Railways that spread. Patrols that learn your patterns and adapt. An AI that doesn't follow scripts — it <em>observes, thinks, responds.</em> This was the most ambitious thing we'd ever built.</p>
     <p>This Land Is My Land was a stealth action game on paper, but in practice it was an experiment in <strong>emergent storytelling</strong> — what happens when you drop a single person into a world that has its own plans? The world doesn't wait for you. It develops. It evolves. It fights back.</p>
     <p>And then the real world fought back too. In February 2022, Russia invaded Ukraine. Our team — a small group of addicted developers from Kyiv — had to pause development to save their families. Some went to war. The game froze in time. But the lesson it taught me didn't.</p>
     <p>The lesson: <strong>a world that lives without you is the most beautiful kind of world to build.</strong></p>
   </div>
-
   <div class="chapter-gallery g2 sr sr-d1">
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/TLIML_1.jpg" alt="This Land Is My Land" loading="lazy"></div>
     <div class="gal-img"><img src="https://khachatran.com/content/Screenshots/TLIML_2.jpg" alt="This Land Is My Land" loading="lazy"></div>
   </div>
 </div>
 
-<!-- BRIDGE -->
 <div class="bridge sr">
   <div class="bridge-line"></div>
   <p>The frontier obsession didn't die. It <em>deepened.</em> The same era, a new angle — what if you weren't resisting the frontier, but surviving it?</p>
   <div class="bridge-line"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- CHAPTER 6 — TWISTED PATH TO RENOWN -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="chapter">
+<div class="chapter" data-atmosphere="dust">
   <div class="chapter-hero">
     <div class="chapter-hero-img" style="background-image: url('https://cdn.akamai.steamstatic.com/steam/apps/2304660/header.jpg'); background-position: center top;"></div>
     <div class="chapter-hero-overlay"></div>
@@ -632,7 +599,6 @@ body::after {
       <div class="chapter-subtitle">2024 · Game Labs · PvEvP Extraction Shooter · 1899 America</div>
     </div>
   </div>
-
   <div class="chapter-body sr">
     <p>Same team. Same era — 1899, the dying breath of the American frontier. But this time: first-person. Extraction-based. A world where your gun behaves exactly like its historical counterpart — ballistics, smoke, reload mechanics — and where every raid could cost you everything you've built.</p>
     <p>A Twisted Path To Renown was the convergence of every thread: the <em>persistent economy</em> from CrimeCraft, the <em>simulation fidelity</em> from RaceRoom, the <em>living world AI</em> from This Land Is My Land. Homesteads. Farming. Mining. Trading. An extraction loop wrapped around a frontier sandbox.</p>
@@ -640,7 +606,6 @@ body::after {
   </div>
 </div>
 
-<!-- BRIDGE — THE TURN -->
 <div class="bridge sr">
   <div class="bridge-line"></div>
   <p>For twenty-five years, every game pulled me toward the same questions: what makes a world <em>alive?</em> What makes an economy <em>breathe?</em> What makes logistics <em>beautiful?</em></p>
@@ -648,35 +613,24 @@ body::after {
   <div class="bridge-line"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- CHAPTER 7 — VOID LOGISTICS -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div class="future" id="void">
-  <div class="future-label sr">Chapter Seven · Now</div>
-  <h2 class="sr"><em>Void</em> Logistics</h2>
-  <div class="future-desc sr sr-d1">
-    <p>A 2.5D sci-fi space logistics and strategy game. <strong>Factorio meets X4 meets OpenTTD meets Space Rangers</strong> — automated production chains, interstellar trading with supply-demand economics, procedural planetary systems, faction warfare, and a universe that ticks whether you're watching or not.</p>
-    <p style="margin-top: 1.5rem;">Built solo. Unity 6 with ECS/DOTS. Custom rendering pipelines. Procedural planet generation. GPU-driven detail scattering. A technology tree with hundreds of nodes. Behaviour trees for AI factions. Energy grids. Conveyor systems. DNA genetics for individual characters. A save system that serialises entire worlds.</p>
-    <p style="margin-top: 1.5rem;"><em>Every system I've ever built — from the persistent economies of CrimeCraft to the simulation physics of RaceRoom to the living worlds of This Land — flows into this.</em> This is the game all those other games were training me to make.</p>
-  </div>
-
-  <div class="future-tags sr sr-d2">
-    <span>Unity 6.3</span>
-    <span>ECS/DOTS</span>
-    <span>URP 17.2</span>
-    <span>Burst</span>
-    <span>Procedural Planets</span>
-    <span>GPU Scatter</span>
-    <span>Supply-Demand Economics</span>
-    <span>Behaviour Trees</span>
-    <span>Custom Shaders</span>
-    <span>Solo Dev</span>
+<div class="chapter" data-atmosphere="stars">
+  <div class="future" id="void">
+    <div class="future-label sr">Chapter Seven · Now</div>
+    <h2 class="sr"><em>Void</em> Logistics</h2>
+    <div class="future-desc sr sr-d1">
+      <p>A 2.5D sci-fi space logistics and strategy game. <strong>Factorio meets X4 meets OpenTTD meets Space Rangers</strong> — automated production chains, interstellar trading with supply-demand economics, procedural planetary systems, faction warfare, and a universe that ticks whether you're watching or not.</p>
+      <p style="margin-top: 1.5rem;">Built solo. Unity 6 with ECS/DOTS. Custom rendering pipelines. Procedural planet generation. GPU-driven detail scattering. A technology tree with hundreds of nodes. Behaviour trees for AI factions. Energy grids. Conveyor systems. DNA genetics for individual characters. A save system that serialises entire worlds.</p>
+      <p style="margin-top: 1.5rem;"><em>Every system I've ever built — from the persistent economies of CrimeCraft to the simulation physics of RaceRoom to the living worlds of This Land — flows into this.</em> This is the game all those other games were training me to make.</p>
+    </div>
+    <div class="future-tags sr sr-d2">
+      <span>Unity 6.3</span><span>ECS/DOTS</span><span>URP 17.2</span><span>Burst</span>
+      <span>Procedural Planets</span><span>GPU Scatter</span><span>Supply-Demand Economics</span>
+      <span>Behaviour Trees</span><span>Custom Shaders</span><span>Solo Dev</span>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- CLOSING -->
-<!-- ═══════════════════════════════════════════════════════════ -->
 <div class="bridge sr">
   <div class="bridge-line"></div>
   <p>Making games isn't a career. It's a way of <em>seeing.</em> Every game is a lens — a new way to look at systems, at beauty, at what makes a world worth inhabiting. If you're building something and you don't know where it's going — <em>keep building.</em> The thread reveals itself.</p>
@@ -685,20 +639,142 @@ body::after {
 
 <footer class="closing sr">
   <div class="closing-name">Denys Khachatrian</div>
-  <div class="closing-link">
-    <a href="mailto:denis@khachatran.com">denis@khachatran.com</a>
-  </div>
+  <div class="closing-link"><a href="mailto:denis@khachatran.com">denis@khachatran.com</a></div>
   <div class="closing-end">making games since the twentieth century</div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
 <script>
-const sr = document.querySelectorAll('.sr');
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-sr.forEach(el => obs.observe(el));
-</script>
+/* ─── Scroll Reveal ─── */
+document.querySelectorAll('.sr').forEach(el => {
+  new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }).observe(el);
+});
 
+/* ─── Cursor Glow (lazy follow) ─── */
+const glow = document.getElementById('cursorGlow');
+let mx = -500, my = -500, gx = -500, gy = -500;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; glow.classList.add('active'); });
+document.addEventListener('mouseleave', () => glow.classList.remove('active'));
+(function glowLoop() {
+  gx += (mx - gx) * 0.07;
+  gy += (my - gy) * 0.07;
+  glow.style.left = gx + 'px';
+  glow.style.top = gy + 'px';
+  requestAnimationFrame(glowLoop);
+})();
+
+/* ─── Hero Parallax on Scroll ─── */
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('.chapter-hero-img').forEach(img => {
+    const r = img.parentElement.getBoundingClientRect();
+    const off = (r.top + r.height / 2 - innerHeight / 2) * 0.025;
+    img.style.transform = 'scale(1.04) translateY(' + off + 'px)';
+  });
+}, { passive: true });
+
+/* ─── Ambient Particle System ─── */
+const cv = document.getElementById('ambient');
+const cx = cv.getContext('2d');
+let W, H;
+function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+resize();
+addEventListener('resize', resize);
+
+const N = 55;
+const atmoColor = {
+  stars:  [180,180,200],
+  embers: [220,130,60],
+  rain:   [140,170,200],
+  smoke:  [140,135,125],
+  sea:    [100,170,200],
+  dust:   [200,170,120],
+};
+
+let curAtmo = 'stars';
+let tgtC = atmoColor.stars.slice();
+let curC = tgtC.slice();
+
+const ps = Array.from({ length: N }, () => mkP(true));
+
+function mkP(rand) {
+  return {
+    x: Math.random() * (W || 1920),
+    y: rand ? Math.random() * (H || 1080) : (H || 1080) + 20,
+    sz: 0.5 + Math.random() * 1.5,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: -(0.1 + Math.random() * 0.4),
+    op: 0,
+    mop: 0.08 + Math.random() * 0.2,
+    life: 0,
+    ml: 300 + Math.random() * 500,
+    ph: Math.random() * 6.28,
+  };
+}
+
+function beh(p, a, t) {
+  const s = Math.sin;
+  switch (a) {
+    case 'stars': return { dx: s(t*.0003+p.ph)*.08, dy: s(t*.0002+p.ph*1.5)*.06, sm: .8+s(t*.001+p.ph)*.3 };
+    case 'embers': return { dx: s(t*.001+p.ph)*.4, dy: -.3-Math.random()*.1, sm: .6+s(t*.003+p.ph)*.5 };
+    case 'rain': return { dx: 1.2, dy: 3.5+Math.random()*.5, sm: .3, stretch: true };
+    case 'smoke': return { dx: s(t*.0004+p.ph)*.2, dy: -.12-s(t*.0006+p.ph)*.05, sm: 2+s(t*.0008+p.ph)*1, blob: true };
+    case 'sea': return { dx: .25+s(t*.0005+p.ph)*.15, dy: s(t*.001+p.ph)*.3, sm: .8+s(t*.002+p.ph)*.2 };
+    case 'dust': return { dx: s(t*.0006+p.ph)*.25, dy: -.05+s(t*.0004+p.ph*2)*.1, sm: 1+s(t*.001+p.ph)*.4 };
+    default: return { dx: 0, dy: 0, sm: 1 };
+  }
+}
+
+addEventListener('scroll', () => {
+  const mid = H / 2;
+  document.querySelectorAll('[data-atmosphere]').forEach(sec => {
+    const r = sec.getBoundingClientRect();
+    if (r.top < mid && r.bottom > mid) {
+      const a = sec.dataset.atmosphere;
+      if (a !== curAtmo) { curAtmo = a; tgtC = (atmoColor[a] || atmoColor.stars).slice(); }
+    }
+  });
+}, { passive: true });
+
+(function draw(t) {
+  cx.clearRect(0, 0, W, H);
+  for (let i = 0; i < 3; i++) curC[i] += (tgtC[i] - curC[i]) * 0.02;
+  const r = curC[0]|0, g = curC[1]|0, b = curC[2]|0;
+
+  for (const p of ps) {
+    const m = beh(p, curAtmo, t);
+    p.x += m.dx;
+    p.y += m.dy;
+    p.life++;
+    const lr = p.life / p.ml;
+    p.op = lr < .1 ? (lr/.1)*p.mop : lr > .8 ? ((1-lr)/.2)*p.mop : p.mop;
+
+    if (p.life > p.ml || p.x < -30 || p.x > W+30 || p.y < -30 || p.y > H+30) {
+      if (curAtmo === 'embers') { p.x = Math.random()*W; p.y = H+10; }
+      else if (curAtmo === 'rain') { p.x = -10+Math.random()*(W+100); p.y = -10; }
+      else { p.x = Math.random()*W; p.y = Math.random()*H; }
+      p.life = 0; p.ph = Math.random()*6.28; p.ml = 300+Math.random()*500;
+    }
+
+    cx.globalAlpha = p.op;
+    if (m.stretch) {
+      cx.strokeStyle = `rgb(${r},${g},${b})`;
+      cx.lineWidth = 0.5;
+      cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(p.x-3, p.y-8); cx.stroke();
+    } else if (m.blob) {
+      const gr = cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.sz*3);
+      gr.addColorStop(0, `rgba(${r},${g},${b},${p.op*.4})`);
+      gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      cx.fillStyle = gr;
+      cx.beginPath(); cx.arc(p.x,p.y,p.sz*3,0,6.28); cx.fill();
+    } else {
+      cx.fillStyle = `rgb(${r},${g},${b})`;
+      cx.beginPath(); cx.arc(p.x,p.y,p.sz*(m.sm||1),0,6.28); cx.fill();
+    }
+  }
+  cx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+})(0);
+</script>
 </body>
 </html>
